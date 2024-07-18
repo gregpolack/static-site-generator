@@ -50,7 +50,7 @@ class ParentNode(HTMLNode):
         html_list = []
 
         for node in self.children:
-            if node.children == None:
+            if node.children is None:
                 html_list.append(node.to_html())
             else:
                 html_list.extend(node.to_html())

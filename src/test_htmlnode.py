@@ -29,11 +29,21 @@ class TestLeafNode(unittest.TestCase):
         result = '<p>This is a paragraph of text.</p>'
         self.assertEqual(node.to_html(), result)
    
-    def test_a(self):
+    def test_anchor(self):
         node = LeafNode("a", "Click me!", {"href": "https://www.google.com", "target": "_blank"})
         result = '<a href="https://www.google.com" target="_blank">Click me!</a>'
         self.assertEqual(node.to_html(), result)
+
+    def test_no_value(self):
+        node = LeafNode("a", None, {"href": "https://www.google.com", "target": "_blank"})
+        with self.assertRaises(ValueError):
+            node.to_html()
     
+    def test_no_tag(self):
+        node = LeafNode(None, "Normal text")
+        result = "Normal text"
+        self.assertEqual(node.to_html(), result)
+
     def test_repr(self):
         node = LeafNode('a', 'Click me!', {'href': 'https://www.google.com', 'target': '_blank'})
         result = "LeafNode(a, Click me!, {'href': 'https://www.google.com', 'target': '_blank'})"
@@ -70,7 +80,26 @@ class TestParentNode(unittest.TestCase):
         )
         result = "<p><b>Bold text</b><p>Normal text<i>italic text</i></p></p>"
         self.assertEqual(node.to_html(), result)
+    
+    def test_no_tag(self):
+        node = ParentNode(
+            None,
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text")
+            ]
+        )
+        with self.assertRaises(ValueError):
+            node.to_html()
 
+    def test_no_children(self):
+        node = ParentNode("p")
+        with self.assertRaises(ValueError):
+            node.to_html()
+
+    
     def test_repr(self):
         node = ParentNode(
             "p",
