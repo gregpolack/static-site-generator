@@ -21,9 +21,6 @@ class HTMLNode():
     
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
-    
-    def __eq__(self):
-        raise NotImplementedError("HTML Node Parent has no __eq__ method.")
 
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
@@ -37,13 +34,17 @@ class LeafNode(HTMLNode):
         
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
     
+    def __eq__(self, other):
+        if not isinstance(other, LeafNode):
+            return False
+        return (
+            self.tag == other.tag
+            and self.value == other.value
+            and self.props == other.props
+        )
+    
     def __repr__(self):
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
-    
-    def __eq__(self, other):
-        if self.tag == other.tag and self.value == other.value and self.props == other.props:
-            return True
-        return False
     
 class ParentNode(HTMLNode):
     def __init__(self, tag=None, children=None, props=None):
@@ -66,11 +67,6 @@ class ParentNode(HTMLNode):
         html_string = "".join(html_list)
 
         return f"<{self.tag}>{html_string}</{self.tag}>"
-        
-    def __eq__(self, other):
-        if self.tag == other.tag and self.children == other.children and self.props == other.props:
-            return True
-        return False
 
     def __repr__(self):
         return f"ParentNode({self.tag}, {self.children}, {self.props})"
