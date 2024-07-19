@@ -38,14 +38,14 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         self.assertEqual(result, expected_result)
     
     def test_bold(self):
-        node = TextNode("This is a text node", "b", "https://boot.dev")
+        node = TextNode("This is a text node", "bold", "https://boot.dev")
         expected_result = LeafNode("b", node.text)
         result = text_node_to_html_node(node)
         
         self.assertEqual(result, expected_result)
     
     def test_italic(self):
-        node = TextNode("This is a text node", "i", "https://boot.dev")
+        node = TextNode("This is a text node", "italic", "https://boot.dev")
         expected_result = LeafNode("i", node.text)
         result = text_node_to_html_node(node)
         
@@ -58,13 +58,13 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         self.assertEqual(text_node_to_html_node(node), expected_result)
 
     def test_link(self):
-        node = TextNode("This is a link", "a", "https://boot.dev")
+        node = TextNode("This is a link", "link", "https://boot.dev")
         expected_result = LeafNode("a", node.text, {"href": {node.url}})
     
         self.assertEqual(text_node_to_html_node(node), expected_result)
     
     def test_img(self):
-        node = TextNode("This is an image", "img", "https://boot.dev")
+        node = TextNode("This is an image", "image", "https://boot.dev")
         expected_result = LeafNode("img", "", {"src": {node.url}, "alt": {node.text}})
     
         self.assertEqual(text_node_to_html_node(node), expected_result)
