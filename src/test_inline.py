@@ -1,9 +1,9 @@
 import unittest
 from textnode import TextNode
 
-from delimiter import split_nodes_delimiter
+from inline import *
 
-class TestDelimiter(unittest.TestCase):
+class TestSplitNodesDelimiter(unittest.TestCase):
     def test_base_case(self):
         node = [TextNode("This is text with a `code block` word", "text")]
         expected_result = [
@@ -75,4 +75,33 @@ class TestDelimiter(unittest.TestCase):
         with self.assertRaises(ValueError):
             node = TextNode("This is a **bold block` of text", "text")
             split_nodes_delimiter([node], "**", "bold")
+
+class TestExtractMarkdownImages(unittest.TestCase):
+    def test_base_case(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        expected_result = [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        result = extract_markdown_images(text)
+
+        self.assertListEqual(expected_result, result)
     
+    def test_image_at_start(self):
+        text = "![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        expected_result = [("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        result = extract_markdown_images(text)
+
+        self.assertListEqual(expected_result, result)
+
+class TestExtractMarkdownLinks(unittest.TestCase):
+    def test_base_case(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        expected_result = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
+        result = extract_markdown_links(text)
+
+        self.assertListEqual(expected_result, result)
+    
+    def test_link_at_start(self):
+        text = "[website](https://www.rickroll.com)"
+        expected_result = [("website", "https://www.rickroll.com")]
+        result = extract_markdown_links(text)
+
+        self.assertListEqual(expected_result, result)
