@@ -239,3 +239,65 @@ class TestSplitNodesLink(unittest.TestCase):
         result = split_nodes_link([node1, node2])
 
         self.assertEqual(expected_result, result)
+    
+    def test_image_as_input(self):
+        nodes = [
+            TextNode("This is **text** with an *italic* word and a `code block` and an ", "text"), 
+            TextNode("obi wan image", "image", "https://i.imgur.com/fJRm4Vk.jpeg"), 
+            TextNode(" and a [link](https://boot.dev)", "text")
+        ]
+
+        expected_result = [
+            TextNode("This is **text** with an *italic* word and a `code block` and an ", "text"),
+            TextNode("obi wan image", "image", "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", "text"),
+            TextNode("link", "link", "https://boot.dev")
+        ]
+
+        result = split_nodes_link(nodes)
+
+        self.assertListEqual(expected_result, result)
+
+class TestTextToTextnodes(unittest.TestCase):
+    def test_base_case(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected_result = [
+            TextNode("This is ", "text"), 
+            TextNode("text", "bold"), 
+            TextNode(" with an ", "text"), 
+            TextNode("italic", "italic"), 
+            TextNode(" word and a ", "text"), 
+            TextNode("code block", "code"),
+            TextNode(" and an ", "text"),
+            TextNode("obi wan image", "image", "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", "text"),
+            TextNode("link", "link", "https://boot.dev")
+        ]
+        result = text_to_textnodes(text)
+
+        self.assertListEqual(expected_result, result)
+
+    def test_only_links_and_images(self):
+        text = "![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected_result = [
+            TextNode("obi wan image", "image", "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", "text"),
+            TextNode("link", "link", "https://boot.dev")
+        ]
+        result = text_to_textnodes(text)
+
+        self.assertListEqual(expected_result, result)
+
+    def test_only_delimiters(self):
+        text = "This is **text** with an *italic* word and a `code block`"
+        expected_result = [
+            TextNode("This is ", "text"), 
+            TextNode("text", "bold"), 
+            TextNode(" with an ", "text"), 
+            TextNode("italic", "italic"), 
+            TextNode(" word and a ", "text"), 
+            TextNode("code block", "code")
+        ]
+        result = text_to_textnodes(text)
+
+        self.assertListEqual(expected_result, result)
