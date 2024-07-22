@@ -1,6 +1,8 @@
 from textnode import TextNode
 import re
 
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
@@ -37,7 +39,47 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 def extract_markdown_images(text):
     return re.findall(r"!\[(.*?)\]\((.*?)\)", text)
     
-
 def extract_markdown_links(text):
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)
-    
+
+def split_nodes_image(old_nodes):
+    new_nodes = []
+
+    for node in old_nodes:
+        nodes = []
+        
+        images = extract_markdown_images(node.text)
+        for image in images:
+            nodes.append(TextNode(image[0], "image", image[1]))
+        
+        sections = re.split(r"!\[.+?\]\(.+?\)", node.text)
+        for section in sections:
+            if section != "":
+                nodes.append(TextNode(section, "text"))
+
+        sorted_nodes = sorted(nodes, key = lambda x: node.text.index(x.text))
+        new_nodes.extend(sorted_nodes)
+            
+    return new_nodes
+         
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+
+    for node in old_nodes:
+        nodes = []
+        
+        links = extract_markdown_links(node.text)
+        for link in links:
+            nodes.append(TextNode(link[0], "link", link[1]))
+        
+        sections = re.split(r"\[.+?\]\(.+?\)", node.text)
+        for section in sections:
+            if section != "":
+                nodes.append(TextNode(section, "text"))
+
+        sorted_nodes = sorted(nodes, key = lambda x: node.text.index(x.text))
+        new_nodes.extend(sorted_nodes)
+            
+    return new_nodes
+            
