@@ -59,13 +59,13 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
 
     def test_link(self):
         node = TextNode("This is a link", "link", "https://boot.dev")
-        expected_result = LeafNode("a", node.text, {"href": {node.url}})
+        expected_result = LeafNode("a", node.text, {"href": f"{node.url}"})
     
         self.assertEqual(text_node_to_html_node(node), expected_result)
     
     def test_img(self):
         node = TextNode("This is an image", "image", "https://boot.dev")
-        expected_result = LeafNode("img", "", {"src": {node.url}, "alt": {node.text}})
+        expected_result = LeafNode("img", "", {"src": f"{node.url}", "alt": f"{node.text}"})
     
         self.assertEqual(text_node_to_html_node(node), expected_result)
 

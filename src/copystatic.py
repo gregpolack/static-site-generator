@@ -14,10 +14,10 @@ def copy_from_source(src, dst):
     entries = os.listdir(src)
 
     for entry in entries:
-        filepath = src + entry
+        filepath = os.path.join(src, entry)
 
         if os.path.isfile(filepath):
             shutil.copy(filepath, dst)
         else:
-            copy_from_source(src + entry + "/", dst + entry + "/")
+            copy_from_source(filepath, os.path.join(dst, entry))
 

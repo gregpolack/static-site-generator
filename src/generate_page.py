@@ -18,6 +18,18 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as f:
         f.write(template)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    entries = os.listdir(dir_path_content)
+
+    for entry in entries:
+        filepath = os.path.join(dir_path_content, entry)
+
+        if os.path.isfile(filepath):
+            generate_page(filepath, template_path, os.path.join(dest_dir_path, "index.html"))
+        else:
+            os.mkdir(os.path.join(dest_dir_path, entry))
+            generate_pages_recursive(filepath, template_path, os.path.join(dest_dir_path, entry))
+
 def path_to_variable(path):
     f = open(path, "r")
     content = f.read()
