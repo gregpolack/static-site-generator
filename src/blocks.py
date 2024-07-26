@@ -2,6 +2,15 @@ from htmlnode import ParentNode
 from inline import text_to_textnodes
 from textnode import text_node_to_html_node
 
+def extract_title(markdown):
+    lines = markdown.split("\n")
+    
+    for line in lines:
+        if line.startswith("# "):
+            return line.strip("# ").strip()
+    
+    raise Exception("Markdown has no h1 header")
+
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
     
@@ -88,7 +97,7 @@ def block_to_html_node(block, block_type):
         return ParentNode("ol", children)
 
     if block_type == "quote":
-        cleared_lines = list(map(lambda x: x.replace(">", ""), lines))
+        cleared_lines = list(map(lambda x: x.strip(">").strip(), lines))
         quote_text = " ".join(cleared_lines)
         children = text_to_children(quote_text)
 

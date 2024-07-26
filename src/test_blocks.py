@@ -2,6 +2,28 @@ import unittest
 
 from blocks import *
 
+class TestExtractTitle(unittest.TestCase):
+    def test_base_case(self):
+        md = "# Hello"
+
+        expected_result = "Hello"
+        result = extract_title(md)
+
+        self.assertEqual(expected_result, result)
+
+    def test_longer_md(self):
+        md = """
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+"""
+
+        expected_result = "This is a heading"
+        result = extract_title(md)
+
+        self.assertEqual(expected_result, result)
+
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_base_case(self):
         md = """
